@@ -1,0 +1,11 @@
+Configuração:
+git config --global user.name DanielVianaC
+git config --global user.email daniel.carvalho85@etec.sp.gov.br
+
+npx create-expo-app@latest DMusic --template blank
+
+cd DMusic
+npx expo install react-dom react-native-web @expo/metro-runtime
+npx expo install @react-native-community/slider
+npx expo install expo-av
+
