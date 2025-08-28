@@ -9,3 +9,4 @@ npx expo install react-dom react-native-web @expo/metro-runtime
 npx expo install @react-native-community/slider
 npx expo install expo-av
 
+npx expo start --web
