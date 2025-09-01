@@ -19,11 +19,43 @@ export default function App() {
         </View>
 
         <View>
-          <Slider></Slider>
+          <Text style={[styles.songContent, styles.songTitle]}>
+            Título da Música
+          </Text>
+          <Text style={[styles.songContent, styles.songArtist]}>
+            Autor da Música
+          </Text>
         </View>
 
+        <View>
+          <Slider 
+            style={styles.progressBar}
+            value={10}
+            mininumValue={0}
+            maximumValue={100}
+            thumbTintColor='#FFD369'
+            minimumTrackTintColot='#FFD369'
+            maxinumTrackTintColor='#fff'
+            onSlidingComplete={() => {}}
+          />
+          <View style={styles.progressLevelDuration}>
+            <Text style={styles.progressLevelText}>00:00</Text>
+            <Text style={styles.progressLevelText}>00:00</Text>
+          </View>
+        </View>
 
-
+        <View style={styles.musicControlsContainer}>
+          <TouchableOpacity>
+            <Ionicons name='play-skip-back-outline' size={35} color="#FFD369" />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name='pause-circle' size={75} color="#FFD369" />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name='play-skip-forward-outline' size={35} color="#FFD369" />
+          </TouchableOpacity>
+        </View>
+        
       </View>
       <View style={styles.footer}>
         <View styles={styles.iconWrapper}>
@@ -87,4 +119,37 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRaidius: 15
   },
+  songContent: {
+    textAling: 'center',
+    color: '#EEEEEE',
+  },
+  songTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  songArtist: {
+    fontSize: 16,
+    fontWeight:'300',
+  },
+  progressBar: {
+    width: 350,
+    height: 40,
+    marginTop: 20,
+  },
+  progressLevelDuration: {
+    width: 340,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  progressLabelText: {
+    color: '#fff',
+    fontWeight: '500',
+  },
+  musicControlsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '60%',
+    marginTop: 10,
+  }
 });
