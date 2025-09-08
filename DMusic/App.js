@@ -1,22 +1,37 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Slider from '@react-native-community/slider'
+import Slider from '@react-native-community/slider';
+import songs from './model/data';
 
 const { width, height } = Dimensions.get('window');
 
 export default function App() {
+  const renderSongs = ({ item, index }) => {
+    return  (
+      <View style={styles.mainImageWrapper}>
+        <View style={[style.imageWrapper, styles.elevation]}>
+          <Image sourse={item.artwork} style={styles.musicImage} />
+        </View>
+      </View>
+    )
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
 
-        <View style={[style.imageWrapper, styles.elevation]}>
-          <Image 
-            sourse={require('./assets/img/valdemir.png')}
-            style={styles.musicImage}
-            />
-        </View>
+       <FlatList  
+        data={songs}
+        keyExtractor={item => item.id}
+        renderItem={renderSongs}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScrol={( ) => { }}
+       />
 
         <View>
           <Text style={[styles.songContent, styles.songTitle]}>
@@ -87,6 +102,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  mainImageWrapper : {
+    width: width,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   footer: {
     width: width,
