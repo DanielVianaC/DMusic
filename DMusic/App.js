@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native';
+import { Animated, Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Slider from '@react-native-community/slider';
 import songs from './model/data';
@@ -8,13 +8,31 @@ import songs from './model/data';
 const { width, height } = Dimensions.get('window');
 
 export default function App() {
+  const[sound, setSound] = useState(null);
+  const[songIndex, setSongIndex] = useState(0);
+  const[songStatus, setSongStatus] = useSatte(null);
+  const[isPlaying, setIsPLaying] = useState(false);
+  const[islooping, setIsLopping] = useState(false);
+
+  const songSlider = useRef(null);
+  const scroollX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    scroollX.addListener(({value}) => {
+      const index = Math.round(value / width);
+      //console.log(`ScrollX : ${value}`);
+      //console.log(index);
+      setSongIndex(index);
+    });
+  }, []);
+
   const renderSongs = ({ item, index }) => {
     return  (
-      <View style={styles.mainImageWrapper}>
+      <Animated.View style={styles.mainImageWrapper}>
         <View style={[style.imageWrapper, styles.elevation]}>
           <Image sourse={item.artwork} style={styles.musicImage} />
         </View>
-      </View>
+      </Animated.View>
     )
   };
 
@@ -22,7 +40,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
 
-       <FlatList  
+       <Animated.FlatList  
         data={songs}
         keyExtractor={item => item.id}
         renderItem={renderSongs}
@@ -30,15 +48,25 @@ export default function App() {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScrol={( ) => { }}
+        onScrol={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: { x : scrollX },
+              }
+            }
+          ],
+          { useNativeDriver: true }
+        )}
        />
+
 
         <View>
           <Text style={[styles.songContent, styles.songTitle]}>
-            Título da Música
+            {songs[songIndex].title}
           </Text>
           <Text style={[styles.songContent, styles.songArtist]}>
-            Autor da Música
+            {songs[songIndex].artist}
           </Text>
         </View>
 
