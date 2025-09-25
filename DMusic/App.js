@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Animated, Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Slider from '@react-native-community/slider';
+import { Audio } from 'expo-av';
 import songs from './model/data';
 
 const { width, height } = Dimensions.get('window');
@@ -82,26 +83,45 @@ export default function App() {
   }
   
 const skipToNext = () => {
-
+  songSlider.current.scrollToOffset ({
+    offset: (songIndex + 1) * width
+  })
 }
 
 const skipToPrevious = () => {
-
+  songSlider.current.scrollToOffset ({
+    offset: (songIndex - 1) * width
+  })
 }
 
 const stop = async () => {
-
+  if (sound) {
+    await sound.stopAsync();
+    sound.unloadAsync();
+    await loadSound();
+  }
 }
 
 const repeat = async (value) => {
+  setIsLopping(value);
+  await sound.setIsLoopingAsync(value);
+}
+
+const updatePosition = async () => {
 
 }
+
+useEffect(() => {
+  const intervalID = setInterval(updatePosition, 500);
+  return () => clearInterval(intervalID);
+}, [sound, isPlaying]);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
 
        <Animated.FlatList  
+        ref={songSlider}
         data={songs}
         keyExtractor={item => item.id}
         renderItem={renderSongs}
@@ -134,9 +154,9 @@ const repeat = async (value) => {
         <View>
           <Slider 
             style={styles.progressBar}
-            value={10}
+            value={songStatus ? songStatus.positionMillis : 0}
             mininumValue={0}
-            maximumValue={100}
+            maximumValue={songStatus ? songStatus.durationMillis : 0}
             thumbTintColor='#FFD369'
             minimumTrackTintColot='#FFD369'
             maxinumTrackTintColor='#fff'
@@ -149,7 +169,7 @@ const repeat = async (value) => {
         </View>
 
         <View style={styles.musicControlsContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={skipToPrevious}>
             <Ionicons name='play-skip-back-outline' size={35} color="#FFD369" />
           </TouchableOpacity>
           <TouchableOpacity onPress={handlePlayPause}>
