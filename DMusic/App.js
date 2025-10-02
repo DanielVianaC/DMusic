@@ -108,7 +108,13 @@ const repeat = async (value) => {
 }
 
 const updatePosition = async () => {
-
+  if (sound & isPlaying) {
+    const status = await sound.getStatusAsync();
+    setSongStatus(status)
+    if (status.positionMillis == status.durationMillis) {
+      if (!isLooping) await stop();
+    }
+  }
 }
 
 useEffect(() => {
@@ -160,11 +166,18 @@ useEffect(() => {
             thumbTintColor='#FFD369'
             minimumTrackTintColot='#FFD369'
             maxinumTrackTintColor='#fff'
-            onSlidingComplete={() => {}}
+            onSlidingComplete={(value) => {
+              sound.setPositionAsync(value);
+             }}
           />
           <View style={styles.progressLevelDuration}>
-            <Text style={styles.progressLevelText}>00:00</Text>
-            <Text style={styles.progressLevelText}>00:00</Text>
+            <Text style={styles.progressLabelText}>
+             {songStatus ? `${Math.floor(songStatus.positionMillis / 1000 / 60)}:${String(Math.floor((songStatus.positionMillis / 1000) %60)).padStart(2, "0")}` : "00:00"}
+            </Text>
+
+            <Text style={styles.progressLabelText}>
+            {songStatus ? `${Math.floor(songStatus.durationMillis / 1000 / 60)}:${String(Math.floor((songStatus.durationnMillis / 1000) %60)).padStart(2, "0")}` : "00:00"}
+            </Text>
           </View>
         </View>
 
@@ -186,8 +199,8 @@ useEffect(() => {
           <TouchableOpacity>
             <Ionicons name='heart-outline' size={30} color="#888888" />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name='repeat' size={30} color="#888888" />
+          <TouchableOpacity onPress={() => {repeat(!isLooping) }}>
+            <Ionicons name='repeat' size={30} color={isLooping ? "#ffffff" : "#888888"} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Ionicons name='share-outline' size={30} color="#888888" />
